@@ -42,6 +42,26 @@ public class TableCreatorTest {
 
     }
 
+    enum Color {
+        RED, BLUE, BLACK
+    }
+
+    enum Price {
+        CHEAP, MAINSTREAM, EXPENSIVE
+    }
+
+    @Entity
+    private static class CarRecords {
+
+        @Enumerated(EnumType.STRING)
+        private Color color;
+
+        @Column(name = "muchMoney")
+        @Enumerated(EnumType.ORDINAL)
+        private Price price;
+
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testNonEntityClass() {
         TableCreator.process(NonEntityClass.class);
@@ -55,6 +75,11 @@ public class TableCreatorTest {
     @Test
     public void testMedicalRecordsEntity() {
         assertEquals("CREATE TABLE records(name VARCHAR(255), inNum VARCHAR(48), age INTEGER);", TableCreator.process(MedicalRecords.class));
+    }
+
+    @Test
+    public void testEnumeratedTypes() {
+        assertEquals("CREATE TABLE CarRecords(color VARCHAR(255), muchMoney INTEGER);", TableCreator.process(CarRecords.class));
     }
 
 }
